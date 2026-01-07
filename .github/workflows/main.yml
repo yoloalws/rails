@@ -21,6 +21,20 @@ jobs:
 
       - run: echo "This is a test step"
 
+  bundler-audit:
+    runs-on: ubuntu-22.04
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: docker run --rm :/src -w /src hysnsec/bundle-audit check --format json --output bundle-audit-output.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bundler-audit
+          path: bundle-audit-output.json
+        if: always()                        # what is this for?
+
   integration:
     runs-on: ubuntu-22.04
     needs: test
